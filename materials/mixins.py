@@ -5,11 +5,16 @@ from users.permissions import IsOwner, IsModerator
 
 
 class LessonPermissionMixin:
-    """Миксин для настройки прав доступа в уроках."""
+    """
+    Настраивает права доступа владельца и модератора в курсах и уроках.
+    """
 
     def get_permissions(self):
-        """Настраиваем права доступа для владельцев и модераторов."""
-
+        """
+        Настраивает права доступа владельца и модератора в курсах и уроках.
+        :param self: Объект класса
+        :return: Список разрешений
+        """
         if self.request.method in ["POST", "DELETE"]:
             self.permission_classes = [IsAuthenticated, IsOwner]  # Только владелец может создавать и удалять
         elif self.request.method in ["PUT", "PATCH"]:
