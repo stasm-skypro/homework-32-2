@@ -34,9 +34,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 # Third-party apps
-INSTALLED_APPS += ["rest_framework", "rest_framework_simplejwt"]
+INSTALLED_APPS += [
+    "rest_framework",  # Django REST Framework
+    "rest_framework_simplejwt",  # Django REST Framework Simple JWT
+    "drf_yasg"  # Django REST Framework Swagger
+]
 # Local apps
-INSTALLED_APPS += ["users", "materials"]
+INSTALLED_APPS += [
+    "users",  # User models
+    "materials"  # Material models
+]
 
 
 MIDDLEWARE = [
