@@ -95,7 +95,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         """
         Определяет поведение сериализатора курса.
-        Задаёт поля модели.
+        Задаёт поля модели в админке.
         """
 
         model = Course

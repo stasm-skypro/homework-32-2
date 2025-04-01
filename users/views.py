@@ -18,6 +18,7 @@ from .serializers import (
 
 import logging
 
+from .services import convert_rub_to_usd, create_price, create_checkout_session
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +110,22 @@ class PaymentViewSet(viewsets.ModelViewSet):
     # Поля, по которым можно сортировать (`ordering=-date` для сортировки по убыванию)
     ordering_fields = ["date", "amount"]
 
+    def perform_create(self, request, *args, **kwargs):
+        """
+        Переопределяет создание оплаты.
+        :param request:
+        :param args:
+        :param kwargs:
+        :return: None
+        """
+        payment = self.serializer_class(user=request.user)
+        amount_usd = convert_rub_to_usd(payment.amount)
+        price = create_price(amount_usd)
+        session_id, session_url = create_checkout_session(price.id)
+        payment.session_id = session_id
+        payment.link = session_url
+        payment.save()
+
 
 # -- Subscription ViewSet --
 class SubscriptionAPIView(APIView):
@@ -136,3 +153,28 @@ class SubscriptionAPIView(APIView):
             answer = status.HTTP_201_CREATED
 
         return Response({"message": message}, status=answer)
+
+
+# class PaymentCreateAPIView(APIView):
+#     """
+#     Определяет API для создания оплаты.
+#     """
+#     serializer_class = PaymentSerializer
+#     permission_classes = [IsAuthenticated]
+#     queryset = Payment.objects.all()
+#
+#     def perform_create(self, request, *args, **kwargs):
+#         """
+#         Переопределяет создание оплаты.
+#         :param request:
+#         :param args:
+#         :param kwargs:
+#         :return: None
+#         """
+#         payment = self.serializer_class(user=request.user)
+#         amount_usd = convert_rub_to_usd(payment.amount)
+#         price = create_price(amount_usd)
+#         session_id, session_url = create_checkout_session(price.id)
+#         payment.session_id = session_id
+#         payment.link = session_url
+#         payment.save()

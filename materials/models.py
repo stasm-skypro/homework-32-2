@@ -3,7 +3,7 @@ from django.db import models
 
 class Course(models.Model):
     """
-    Модель курса.
+    Определяет модель курса.
     Attributes:
         name (str): Название курса,
         description (str): Описание курса,
@@ -33,7 +33,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     """
-    Модель урока.
+    Определяет модель урока.
     Attributes:
         name (str): Название урока,
         description (str): Описание урока,

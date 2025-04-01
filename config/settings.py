@@ -195,3 +195,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Настройка времени жизни токена обновления
     "AUTH_HEADER_TYPES": ("Bearer",),  # Настройка типа заголовка для токена
 }
+
+
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
