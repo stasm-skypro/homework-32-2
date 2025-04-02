@@ -148,6 +148,12 @@ class Payment(models.Model):
         ("transfer", "Перевод на счет"),
     ]
 
+    # Статусы оплаты
+    class StatusChoices(models.TextChoices):
+        PENDING = "pending", "Ожидание"
+        PAID = "paid", "Оплачено"
+        UNPAID = "unpaid", "Не оплачено"
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -204,6 +210,8 @@ class Payment(models.Model):
         verbose_name="Ссылка на оплату",
         help_text="Ссылка на оплату",
     )
+
+    status = models.CharField(max_length=10, choices=StatusChoices.choices, default=StatusChoices.PENDING)
 
     class Meta:
         """

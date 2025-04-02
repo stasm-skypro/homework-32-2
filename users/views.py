@@ -1,10 +1,13 @@
+import requests
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters, status
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404, CreateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.conf import settings
 
 from materials.models import Course
 from .models import User, Payment, Subscription
@@ -164,6 +167,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
     # Поля, по которым можно сортировать (`ordering=-date` для сортировки по убыванию)
     ordering_fields = ["date", "amount"]
 
+    # Создание оплаты
     def perform_create(self, serializer):
         """
         Переопределяет создание оплаты.
@@ -179,6 +183,43 @@ class PaymentViewSet(viewsets.ModelViewSet):
         payment.session_id = session_id
         payment.link = session_url
         payment.save()
+
+    # Проверка статуса оплаты
+    @action(detail=True, methods=["get"])
+    def check_status(self, request, pk=None, drf_status=None):
+        """
+        Проверяет статус оплаты.
+        :param request: Запрос
+        :param pk: id оплаты
+        :param drf_status: Статус
+        :return: Ответ
+        """
+        payment = self.get_object()
+
+        if not payment.session_id:
+            return Response({"error": "Нет session_id для проверки оплаты."}, status=drf_status.HTTP_400_BAD_REQUEST)
+
+        url = f"https://api.stripe.com/v1/checkout/sessions/{payment.session_id}"
+        headers = {"Authorization": f"Bearer {settings.STRIPE_SECRET_KEY}"}
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            return Response({"error": "Ошибка запроса к Stripe."}, status=response.status_code)
+
+        session_data = response.json()
+        stripe_status = session_data.get("payment_status")
+
+        # Обновляем статус в модели Payment
+        if stripe_status == "paid":
+            payment.status = Payment.StatusChoices.PAID  # Например, "paid"
+        elif stripe_status == "unpaid":
+            payment.status = Payment.StatusChoices.UNPAID  # Например, "unpaid"
+        else:
+            payment.status = Payment.StatusChoices.PENDING  # Например, "pending"
+
+        payment.save()
+
+        return Response({"payment_status": stripe_status})
 
 
 # -- Subscription ViewSet --
