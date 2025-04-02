@@ -17,7 +17,6 @@ class LessonCreateAPIViewTestCase(APITestCase):
     def setUp(self):
         """
         Создаёт пользователей и тестовые данные.
-        :param self: Объект класса
         :return: None
         """
         User.objects.all().delete()  # Удаление всех пользователей перед тестом
@@ -54,7 +53,6 @@ class LessonCreateAPIViewTestCase(APITestCase):
     def test_create_lesson_owner(self):
         """
         Проверяет создание урока владельцем.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -74,7 +72,6 @@ class LessonCreateAPIViewTestCase(APITestCase):
     def test_list_lessons_authenticated(self):
         """
         Проверяет, что владелец может просматривать список уроков.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -84,7 +81,6 @@ class LessonCreateAPIViewTestCase(APITestCase):
     def test_retrieve_lesson_owner(self):
         """
         Проверяет, что владелец может просматривать свой урок.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -94,7 +90,6 @@ class LessonCreateAPIViewTestCase(APITestCase):
     def test_update_lesson_owner(self):
         """
         Проверяет, что владелец может обновлять свой урок.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -111,7 +106,6 @@ class LessonCreateAPIViewTestCase(APITestCase):
     def test_delete_lesson_owner(self):
         """
         Проверяет, что Владелец может удалять свой урок.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -128,7 +122,6 @@ class CourseViewSetTestCase(APITestCase):
     def setUp(self):
         """
         Создаёт пользователей и тестовые данные.
-        :param self: Объект класса
         :return: None
         """
         User.objects.all().delete()  # Удаление всех пользователей перед тестом
@@ -169,7 +162,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_create_course_owner(self):
         """
         Проверяет, что владелец может создать курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -180,7 +172,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_create_course_unauthenticated(self):
         """
         Проверяет, что неавторизованный пользователь не может создать курс.
-        :param self: Объект класса
         :return: None
         """
         data = {"name": "New Course", "description": "New Description"}
@@ -190,7 +181,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_list_courses_authenticated(self):
         """
         Проверяет, что авторизованный пользователь может получить список курсов.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.user)
@@ -200,7 +190,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_list_courses_unauthenticated(self):
         """
         Проверяет, что неавторизованный пользователь не может получить список курсов.
-        :param self: Объект класса
         :return: None
         """
         response = self.client.get(self.list_url)
@@ -209,7 +198,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_retrieve_course_owner(self):
         """
         Проверяет, что владелец может просматривать курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -219,7 +207,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_retrieve_course_moderator(self):
         """
         Проверяет, что Модератор может просматривать курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.moderator)
@@ -229,7 +216,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_retrieve_course_other_user(self):
         """
         Проверяет, что обычный пользователь не может просматривать чужой курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.user)
@@ -239,7 +225,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_update_course_owner(self):
         """
         Проверяет, что владелец может обновить курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -250,7 +235,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_update_course_moderator(self):
         """
         Проверяет, что модератор может обновить курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.moderator)
@@ -261,7 +245,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_update_course_other_user(self):
         """
         Проверяет, что обычный пользователь не может обновить чужой курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.user)
@@ -272,7 +255,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_delete_course_owner(self):
         """
         Проверяет, что владелец может удалить курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.owner)
@@ -282,7 +264,6 @@ class CourseViewSetTestCase(APITestCase):
     def test_delete_course_moderator(self):
         """
         Проверяет, что модератор не может удалить курс.
-        :param self: Объект класса
         :return: None
         """
         self.client.force_authenticate(user=self.moderator)

@@ -12,7 +12,6 @@ class LessonPermissionMixin:
     def get_permissions(self):
         """
         Настраивает права доступа владельца и модератора в курсах и уроках.
-        :param self: Объект класса
         :return: Список разрешений
         """
         if self.request.method in ["POST", "DELETE"]:

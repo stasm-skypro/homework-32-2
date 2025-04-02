@@ -117,7 +117,6 @@ class User(AbstractUser):
     def __str__(self):
         """
         Определяет отображение объекта пользователя в админке.
-        :param self: Объект класса
         :return: Электронная почта пользователя
         """
         return self.email
@@ -125,7 +124,6 @@ class User(AbstractUser):
     def get_user_name(self):
         """
         Получает имя пользователя.
-        :param self: Объект класса
         :return: Имя пользователя
         """
         return self.username
@@ -218,7 +216,6 @@ class Payment(models.Model):
     def __str__(self):
         """
         Определяет отображение объекта оплаты в админке.
-        :param self: Объект класса
         :return: Электронная почта пользователя и сумма оплаты"""
         return f"{self.user.email} - {self.amount} руб."
 
@@ -252,7 +249,6 @@ class Subscription(models.Model):
     def __str__(self):
         """
         Определяет отображение объекта подписки в админке.
-        :param self: Объект класса
         :return: Электронная почта пользователя и название курса
         """
         return f"{self.user.email} - {self.course.name}"

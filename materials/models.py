@@ -19,7 +19,6 @@ class Course(models.Model):
     def __str__(self):
         """
         Определяет отображение объекта курса в админке.
-        :param self: Объект класса
         :return: Название курса
         """
         return self.name
@@ -53,7 +52,6 @@ class Lesson(models.Model):
     def __str__(self):
         """
         Определяет отображение урока в админке.
-        :param self: Объект класса
         :return: Название урока и название курса
         """
         return f"{self.name} - {self.course.name}"

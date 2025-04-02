@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 class CourseViewSet(viewsets.ModelViewSet):
     """
     Определяет ViewSet для CRUD-операций с курсами.
+    Attributes:
+        queryset: Список курсов
+        serializer_class: Сериализатор курсов
     """
 
     queryset = Course.objects.all().order_by("id")
@@ -23,7 +26,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """
         Переопределяет сериализатор для логгирования.
-        :param self: Объект класса
         :return: Сериализатор списка курсов или сериализатор курса в зависимости от действия
         """
         if self.action == "retrieve":
@@ -34,7 +36,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """
         Настраивает права доступа для владельцев и модераторов.
-        :param self: Объект класса
         :return: Список разрешений
         """
 
@@ -57,7 +58,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Сохраняет владельца.
-        :param self: Объект класса
         :param serializer: Сериализатор
         :return: None
         """
@@ -67,7 +67,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         """
         Переопределяет создание курса для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -85,7 +84,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         """
         Переопределяет получение списка курсов для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -97,7 +95,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         """
         Переопределяет получение одного курса для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -110,7 +107,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         """
         Переопределяет обновление курса для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -125,7 +121,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         """
         Переопределяет удаление курса для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -140,6 +135,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonCreateAPIView(LessonPermissionMixin, generics.CreateAPIView):
     """
     Определяет API endpoint для создания урока.
+    Attributes:
+        serializer_class: Сериализатор урока
     """
 
     serializer_class = LessonSerializer
@@ -147,7 +144,6 @@ class LessonCreateAPIView(LessonPermissionMixin, generics.CreateAPIView):
     def perform_create(self, serializer):
         """
         Сохраняет владельца.
-        :param self: Объект класса
         :param serializer: Сериализатор урока
         :return: None
         """
@@ -156,7 +152,6 @@ class LessonCreateAPIView(LessonPermissionMixin, generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         """
         Переопределяет создание урока для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -174,6 +169,10 @@ class LessonCreateAPIView(LessonPermissionMixin, generics.CreateAPIView):
 class LessonListAPIView(LessonPermissionMixin, generics.ListAPIView):
     """
     Определяет API endpoint для получения списка уроков.
+    Attributes:
+        queryset: Список уроков
+        serializer_class: Сериализатор урока
+        pagination_class: Класс пагинации
     """
 
     queryset = Lesson.objects.all().order_by("id")
@@ -183,7 +182,6 @@ class LessonListAPIView(LessonPermissionMixin, generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         """
         Переопределяет получение списка уроков для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -196,6 +194,9 @@ class LessonListAPIView(LessonPermissionMixin, generics.ListAPIView):
 class LessonRetrieveAPIView(LessonPermissionMixin, generics.RetrieveAPIView):
     """
     Определяет API endpoint для получения одного урока.
+    Attributes:
+        queryset: Список уроков
+        serializer_class: Сериализатор урока
     """
 
     queryset = Lesson.objects.all().order_by("id")
@@ -204,7 +205,6 @@ class LessonRetrieveAPIView(LessonPermissionMixin, generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         """
         Переопределяет получение одного урока для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -218,6 +218,9 @@ class LessonRetrieveAPIView(LessonPermissionMixin, generics.RetrieveAPIView):
 class LessonUpdateAPIView(LessonPermissionMixin, generics.UpdateAPIView):
     """
     Определяет API endpoint для обновления урока.
+    Attributes:
+        queryset: Список уроков
+        serializer_class: Сериализатор урока
     """
 
     queryset = Lesson.objects.all().order_by("id")
@@ -226,7 +229,6 @@ class LessonUpdateAPIView(LessonPermissionMixin, generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         """
         Переопределяет обновление урока для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
@@ -242,6 +244,9 @@ class LessonUpdateAPIView(LessonPermissionMixin, generics.UpdateAPIView):
 class LessonDestroyAPIView(LessonPermissionMixin, generics.DestroyAPIView):
     """
     Определяет API endpoint для удаления урока.
+    Attributes:
+        queryset: Список уроков
+        serializer_class: Сериализатор урока
     """
 
     queryset = Lesson.objects.all().order_by("id")
@@ -250,7 +255,6 @@ class LessonDestroyAPIView(LessonPermissionMixin, generics.DestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         """
         Переопределяет удаление урока для логгирования.
-        :param self: Объект класса
         :param request: Запрос
         :param args: Список позиционных документов
         :param kwargs: Список именованных аргументов
