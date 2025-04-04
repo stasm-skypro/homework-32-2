@@ -3,7 +3,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.apps import UsersConfig
 from rest_framework import routers
-from .views import UserViewSet, PaymentViewSet, SubscriptionAPIView
+from .views import (
+    UserViewSet,
+    PaymentViewSet,
+    SubscriptionAPIView,
+)
 
 app_name = UsersConfig.name
 

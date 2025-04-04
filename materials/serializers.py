@@ -9,10 +9,15 @@ from .validators import DescriptionValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Урок."""
+    """
+    Определяет сериализатор для модели Урок.
+    """
 
     class Meta:
-        """Мета класс для сериализатора."""
+        """
+        Управляет поведением сериализатора урока.
+        Задаёт поля модели и класс валидатора.
+        """
 
         model = Lesson
         fields = "__all__"
@@ -20,25 +25,38 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Курс."""
+    """
+    Определяет сериализатор для модели Курс.
+    """
 
     lessons_count = serializers.SerializerMethodField()  # Количество уроков
     is_subscribed = serializers.SerializerMethodField()  # Подписка
 
     @staticmethod
     def get_lessons_count(obj):
-        """Получение количества уроков в курсе."""
+        """
+        Получает количество уроков в курсе.
+        :param obj: Объект курса
+        :return: Количество уроков
+        """
         return obj.lessons.count()
 
     def get_is_subscribed(self, obj):
-        """Определяет, подписан ли текущий пользователь на курс."""
+        """
+        Определяет, подписан ли текущий пользователь на курс.
+        :param obj: Объект курса
+        :return: True, если пользователь подписан, иначе False
+        """
         user = self.context.get("request").user
         if user.is_authenticated:
             return Subscription.objects.filter(user=user, course=obj).exists()
         return False
 
     class Meta:
-        """Мета класс для сериализатора."""
+        """
+        Управляет поведением сериализатора курса.
+        Задаёт поля модели и класс валидатора.
+        """
 
         model = Course
         fields = ["id", "name", "description", "lessons_count", "is_subscribed"]
@@ -46,7 +64,9 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
-    """Сериализатор для детализации модели Курс."""
+    """
+    Определяет сериализатор для детализации модели Курс.
+    """
 
     lessons_count = serializers.SerializerMethodField()  # Количество уроков
     lessons = LessonSerializer(many=True, read_only=True)  # Уроки
@@ -54,16 +74,29 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_lessons_count(obj):
-        """Получение количества уроков в курсе."""
+        """
+        Получает количество уроков в курсе.
+        :param obj: Объект курса
+        :return: Количество уроков
+        """
         return obj.lessons.count()
 
     def get(self, request, course_id):
+        """
+        Возвращает детализацию курса.
+        :param request: Запрос
+        :param course_id: ID курса
+        :return: Детализацию курса
+        """
         course = get_object_or_404(Course, id=course_id)
         serializer = CourseSerializer(course, context={"request": request})
         return Response(serializer.data)
 
     class Meta:
-        """Мета класс для сериализатора."""
+        """
+        Определяет поведение сериализатора курса.
+        Задаёт поля модели в админке.
+        """
 
         model = Course
         fields = ["name", "description", "lessons_count", "lessons"]

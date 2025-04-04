@@ -15,6 +15,7 @@ app_name = MaterialsConfig.name
 
 
 router = routers.DefaultRouter()
+# URL-ы для Вьюсета Course
 router.register(r"course", CourseViewSet, basename="course")  # URL-ы для Вьюсета
 
 urlpatterns = [

@@ -7,13 +7,11 @@ from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
-
 # Load environment variables from .env file
 load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -22,7 +20,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", False) == "True"
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -34,10 +31,17 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 # Third-party apps
-INSTALLED_APPS += ["rest_framework", "rest_framework_simplejwt"]
+INSTALLED_APPS += [
+    "rest_framework",  # Django REST Framework
+    "rest_framework_simplejwt",  # Django REST Framework Simple JWT
+    "drf_yasg",  # Django REST Framework Swagger
+    "corsheaders",  # Django CORS Headers
+]
 # Local apps
-INSTALLED_APPS += ["users", "materials"]
-
+INSTALLED_APPS += [
+    "users",  # User models
+    "materials"  # Material models
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -47,6 +51,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+MIDDLEWARE += [
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -69,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 DATABASES = {
     "default": {
@@ -82,23 +88,13 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-
 
 # Internationalization
 LANGUAGE_CODE = "en-us"
@@ -106,30 +102,25 @@ TIME_ZONE = "Asia/Almaty"
 USE_I18N = True
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # Custom user model
 AUTH_USER_MODEL = "users.User"
-
 
 # Media files
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024  # max 2 MB
 
-
 # Настройка аутентификации (необходимо для того, чтобы пользователь после успешной регистрации автоматически
 # входил в систему)
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
-
 
 # Настройка логгера
 LOGGING = {
@@ -173,7 +164,6 @@ LOGGING = {
     },
 }
 
-
 # Настройка DjangoFilterBackend
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [  # Настройка фильтрации данных
@@ -189,10 +179,13 @@ REST_FRAMEWORK = {
     ),
 }
 
-
 # Настройка Simple JWT
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # Настройка времени жизни токена доступа
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # Настройка времени жизни токена обновления
     "AUTH_HEADER_TYPES": ("Bearer",),  # Настройка типа заголовка для токена
 }
+
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")

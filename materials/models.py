@@ -2,7 +2,14 @@ from django.db import models
 
 
 class Course(models.Model):
-    """Модель курса."""
+    """
+    Определяет модель курса.
+    Attributes:
+        name (str): Название курса,
+        description (str): Описание курса,
+        image (ImageField): Превью курса,
+        owner (User): Владелец курса.
+    """
 
     name = models.CharField(max_length=255, verbose_name="Название курса")
     description = models.TextField(verbose_name="Описание курса")
@@ -10,18 +17,30 @@ class Course(models.Model):
     owner = models.ForeignKey("users.User", on_delete=models.CASCADE, blank=True, null=True, verbose_name="Владелец курса")
 
     def __str__(self):
-        """Метод для отображения объекта курса в админке."""
+        """
+        Определяет отображение объекта курса в админке.
+        :return: Название курса
+        """
         return self.name
 
     class Meta:
-        """Мета-класс для отображения имени модели в админке."""
+        """Определяет отображение имени модели в админке."""
 
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
 
 
 class Lesson(models.Model):
-    """Модель урока."""
+    """
+    Определяет модель урока.
+    Attributes:
+        name (str): Название урока,
+        description (str): Описание урока,
+        course (Course): Курс,
+        image (ImageField): Превью урока,
+        video (FileField): Видео урока,
+        owner (User): Владелец урока
+    """
 
     name = models.CharField(max_length=255, verbose_name="Название урока")
     description = models.TextField(verbose_name="Описание урока")
@@ -31,11 +50,17 @@ class Lesson(models.Model):
     owner = models.ForeignKey("users.User", on_delete=models.CASCADE, blank=True, null=True, verbose_name="Владелец урока")
 
     def __str__(self):
-        """Метод для отображения объекта урока в админке."""
+        """
+        Определяет отображение урока в админке.
+        :return: Название урока и название курса
+        """
         return f"{self.name} - {self.course.name}"
 
     class Meta:
-        """Мета-класс для отображения имени модели в админке."""
+        """
+        Управляет поведением модели.
+        Определяет имя модели в админке.
+        """
 
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"

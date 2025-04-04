@@ -10,10 +10,15 @@ from users.models import User
 
 # -- Тестирование CRUD операций с уроками --
 class LessonCreateAPIViewTestCase(APITestCase):
-    """Тестирование CRUD операций с уроками."""
+    """
+    Тестирует CRUD операции с уроками.
+    """
 
     def setUp(self):
-        """Создаём тестовые данные."""
+        """
+        Создаёт пользователей и тестовые данные.
+        :return: None
+        """
         User.objects.all().delete()  # Удаление всех пользователей перед тестом
 
         # Создаём тестового владельца
@@ -46,7 +51,10 @@ class LessonCreateAPIViewTestCase(APITestCase):
         self.lesson_delete_url = f"/lesson/delete/{self.lesson.id}/"
 
     def test_create_lesson_owner(self):
-        """Владелец может создать урок."""
+        """
+        Проверяет создание урока владельцем.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.post(
             self.lessons_create_url,
@@ -62,19 +70,28 @@ class LessonCreateAPIViewTestCase(APITestCase):
         self.assertEqual(Lesson.objects.count(), 2)
 
     def test_list_lessons_authenticated(self):
-        """Владелец может просматривать список уроков."""
+        """
+        Проверяет, что владелец может просматривать список уроков.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.get(self.lessons_list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_lesson_owner(self):
-        """Владелец может просматривать свой урок."""
+        """
+        Проверяет, что владелец может просматривать свой урок.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.get(self.lesson_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_lesson_owner(self):
-        """Владелец может обновлять свой урок."""
+        """
+        Проверяет, что владелец может обновлять свой урок.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.put(
             self.lesson_update_url,
@@ -87,7 +104,10 @@ class LessonCreateAPIViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_lesson_owner(self):
-        """Владелец может удалять свой урок."""
+        """
+        Проверяет, что Владелец может удалять свой урок.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.delete(self.lesson_delete_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -95,10 +115,15 @@ class LessonCreateAPIViewTestCase(APITestCase):
 
 # -- Тестирование CRUD операций с курсами --
 class CourseViewSetTestCase(APITestCase):
-    """Тесты для CRUD операций с курсами"""
+    """
+    Тестирует CRUD операции с курсами.
+    """
 
     def setUp(self):
-        """Создаем пользователей и тестовые данные"""
+        """
+        Создаёт пользователей и тестовые данные.
+        :return: None
+        """
         User.objects.all().delete()  # Удаление всех пользователей перед тестом
 
         self.owner = User.objects.create_user(
@@ -135,76 +160,112 @@ class CourseViewSetTestCase(APITestCase):
         self.course_url = f"/course/{self.course.id}/"
 
     def test_create_course_owner(self):
-        """Владелец может создать курс"""
+        """
+        Проверяет, что владелец может создать курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         data = {"name": "New Course", "description": "New Description"}
         response = self.client.post(self.list_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_course_unauthenticated(self):
-        """Неавторизованный пользователь не может создать курс"""
+        """
+        Проверяет, что неавторизованный пользователь не может создать курс.
+        :return: None
+        """
         data = {"name": "New Course", "description": "New Description"}
         response = self.client.post(self.list_url, data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list_courses_authenticated(self):
-        """Авторизованный пользователь может получить список курсов"""
+        """
+        Проверяет, что авторизованный пользователь может получить список курсов.
+        :return: None
+        """
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_courses_unauthenticated(self):
-        """Неавторизованный пользователь не может получить список курсов"""
+        """
+        Проверяет, что неавторизованный пользователь не может получить список курсов.
+        :return: None
+        """
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_retrieve_course_owner(self):
-        """Владелец может просматривать курс"""
+        """
+        Проверяет, что владелец может просматривать курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.get(self.course_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_course_moderator(self):
-        """Модератор может просматривать курс"""
+        """
+        Проверяет, что Модератор может просматривать курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.moderator)
         response = self.client.get(self.course_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_course_other_user(self):
-        """Обычный пользователь не может просматривать чужой курс"""
+        """
+        Проверяет, что обычный пользователь не может просматривать чужой курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.course_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_course_owner(self):
-        """Владелец может обновить курс"""
+        """
+        Проверяет, что владелец может обновить курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         data = {"name": "Updated Course", "description": "Updated Description"}
         response = self.client.put(self.course_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_course_moderator(self):
-        """Модератор может обновить курс"""
+        """
+        Проверяет, что модератор может обновить курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.moderator)
         data = {"name": "Updated Course", "description": "Updated Description"}
         response = self.client.put(self.course_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_course_other_user(self):
-        """Обычный пользователь не может обновить чужой курс"""
+        """
+        Проверяет, что обычный пользователь не может обновить чужой курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.user)
         data = {"name": "Updated Course", "description": "Updated Description"}
         response = self.client.put(self.course_url, data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_course_owner(self):
-        """Владелец может удалить курс"""
+        """
+        Проверяет, что владелец может удалить курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.owner)
         response = self.client.delete(self.course_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_course_moderator(self):
-        """Модератор не может удалить курс"""
+        """
+        Проверяет, что модератор не может удалить курс.
+        :return: None
+        """
         self.client.force_authenticate(user=self.moderator)
         response = self.client.delete(self.course_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

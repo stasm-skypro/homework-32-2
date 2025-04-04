@@ -6,12 +6,18 @@ from materials.models import Course, Lesson
 
 class UserManager(BaseUserManager):
     """
-    Класс менеджера пользователей. Нужен для правильного создания пользователей и суперпользователей в кастомной
+    Определяет менеджера пользователей. Нужен для правильного создания пользователей и суперпользователей в кастомной
     модели пользователя.
     """
 
     def create_user(self, email, password=None, **extra_fields):
-        """Метод для создания обычного пользователя."""
+        """
+        Создаёт обычного пользователя.
+        :param email: Электронная почта пользователя.
+        :param password: Пароль пользователя.
+        :param extra_fields: Дополнительные поля пользователя.
+        :return: Объект пользователя.
+        """
         if not email:
             raise ValueError("The Email must be set")
         email = self.normalize_email(email)
@@ -21,7 +27,13 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        """Метод для создания суперпользователя."""
+        """
+        Создаёт суперпользователя.
+        :param email: Электронная почта суперпользователя.
+        :param password: Пароль суперпользователя.
+        :param extra_fields: Дополнительные поля суперпользователя.
+        :return: Объект суперпользователя.
+        """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -35,7 +47,16 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    """Класс пользователя. Модель 'Пользователь'."""
+    """
+    Определяет модель полльзователя.
+    Attributes:
+        username (str): Имя пользователя.
+        email (str): Электронная почта пользователя.
+        phone (str): Номер телефона пользователя.
+        city (str): Город пользователя.
+        avatar (ImageField): Аватар пользователя.
+        is_staff (bool): Признак, является ли пользователь суперпользователем.
+    """
 
     username = models.CharField(
         max_length=150,
@@ -94,21 +115,44 @@ class User(AbstractUser):
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        """Метод для отображения объекта пользователя в админке."""
+        """
+        Определяет отображение объекта пользователя в админке.
+        :return: Электронная почта пользователя
+        """
         return self.email
 
     def get_user_name(self):
-        """Метод для получения имени пользователя."""
+        """
+        Получает имя пользователя.
+        :return: Имя пользователя
+        """
         return self.username
 
 
 class Payment(models.Model):
-    """Класс оплаты. Модель 'Оплата'."""
+    """
+    Определяет модель оплаты.
+    Attributes:
+        user (ForeignKey): Пользователь, который оплатил.
+        date (DateTimeField): Дата оплаты.
+        course (ForeignKey): Курс, который оплатил пользователь.
+        lesson (ForeignKey): Урок, который оплатил пользователь.
+        amount (DecimalField): Сумма оплаты.
+        payment_method (CharField): Способ оплаты.
+        session_id (CharField): ID сессии оплаты.
+        link (URLField): Ссылка на оплату.
+    """
 
     PAYMENT_METHODS = [
         ("cash", "Наличные"),
         ("transfer", "Перевод на счет"),
     ]
+
+    # Статусы оплаты
+    class StatusChoices(models.TextChoices):
+        PENDING = "pending", "Ожидание"
+        PAID = "paid", "Оплачено"
+        UNPAID = "unpaid", "Не оплачено"
 
     user = models.ForeignKey(
         User,
@@ -151,19 +195,43 @@ class Payment(models.Model):
         verbose_name="Способ оплаты",
     )
 
+    session_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="ID сессии",
+        help_text="ID сессии оплаты",
+    )
+
+    link = models.URLField(
+        max_length=400,  # По умолчанию 200 символов, расширим до 400
+        blank=True,
+        null=True,
+        verbose_name="Ссылка на оплату",
+        help_text="Ссылка на оплату",
+    )
+
+    status = models.CharField(max_length=10, choices=StatusChoices.choices, default=StatusChoices.PENDING)
+
     class Meta:
-        """Мета-класс модели оплаты."""
+        """
+        Определяет отображение имени модели в админке.
+        """
 
         verbose_name = "Оплата"
         verbose_name_plural = "Оплаты"
 
     def __str__(self):
-        """Метод для отображения объекта оплаты в админке."""
+        """
+        Определяет отображение объекта оплаты в админке.
+        :return: Электронная почта пользователя и сумма оплаты"""
         return f"{self.user.email} - {self.amount} руб."
 
 
 class Subscription(models.Model):
-    """Класс подписки. Модель 'Подписка'."""
+    """
+    Определяет модель подписки.
+    """
 
     user = models.ForeignKey(
         User,
@@ -179,11 +247,16 @@ class Subscription(models.Model):
     )
 
     class Meta:
-        """Мета-класс модели подписки."""
+        """
+        Определяет отображение имени модели в админке.
+        """
 
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
 
     def __str__(self):
-        """Метод для отображения объекта подписки в админке."""
+        """
+        Определяет отображение объекта подписки в админке.
+        :return: Электронная почта пользователя и название курса
+        """
         return f"{self.user.email} - {self.course.name}"
